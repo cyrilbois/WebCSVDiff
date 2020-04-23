@@ -1,0 +1,102 @@
+[data-a11y-dialog-native] .dialog-overlay {
+    display: none
+}
+
+dialog[open] {
+    display: block
+}
+
+.dialog[aria-hidden="true"] {
+    display: none
+}
+
+dialog::backdrop {
+    background-color: rgba(0,0,0,0.66)
+}
+
+.dialog-content {
+    background-color: #fff;
+    z-index: 3;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+    margin: 0
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes appear {
+    from {
+        transform: translate(-50%,-40%);
+        opacity: 0
+    }
+
+    to {
+        transform: translate(-50%,-50%);
+        opacity: 1
+    }
+}
+
+.dialog:not([aria-hidden='true']) > .dialog-overlay {
+    animation: fade-in 200ms 1 both
+}
+
+.dialog:not([aria-hidden='true']) > .dialog-content {
+    animation: appear 400ms 150ms 1 both
+}
+
+.dialog-content {
+    padding: 1em;
+    max-width: 90%;
+    width: 600px;
+    border-radius: 2px
+}
+
+.dialog-container {
+    padding: 20px
+}
+
+.dialog h1, .dialog .title {
+    display: block;
+    font-weight: 900;
+    text-align: center;
+    margin: 0;
+    font-size: 2.25em;
+    font-family: 'ESPI Slab',sans-serif;
+    line-height: 1.1;
+    color: #616161
+}
+
+.dialog-close {
+    position: absolute;
+    top: .5em;
+    right: .5em;
+    border: 0;
+    padding: 0;
+    background-color: transparent;
+    font-weight: 700;
+    font-size: 1.25em;
+    width: 1.2em;
+    height: 1.2em;
+    text-align: center;
+    cursor: pointer;
+    transition: .15s
+}
+
+@media screen and (min-width: 700px) {
+    .dialog-close {
+        top: 1em;
+        right: 1em
+    }
+}

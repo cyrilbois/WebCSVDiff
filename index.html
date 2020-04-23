@@ -1,0 +1,111 @@
+<link href="./css/styles.css" rel="stylesheet" />
+<link href="./lib/codemirror/codemirror.css" rel="stylesheet" />
+<link href="./lib/a11y-dialog/a11y-dialog.css" rel="stylesheet" />
+<div class="row-container">
+	<div class="row-container-small">
+				<h1>Web CSV Diff</h1>
+				<div>
+					<input type="file" id="file-input-text" class="hidden"  />
+					<input type="file" id="file-input-text-2" class="hidden"  />
+				</div>
+				<div id="dropZone" class="column-double span">
+					<div class="container-center"><span class="editor-title">First CSV to compare</span></div>
+					<br/><input type="button" class="action-button-editor right span" value="Browse CSV file" onClick="document.getElementById('file-input-text').click();" />
+					<input type="button" class="action-button-editor right span" value="load CSV from URL" onClick="displayLoadURLDialog(myCodeMirrorText1);" />
+					<br/>
+					<br/><div class="row-container editor-container">
+						<textarea id="editor-container-text" class="editor">id,name,year of birth
+1,albert einstein,1879
+2,isaac newton,1643
+3,marie curie,1867
+4,galilée,1564</textarea>
+					</div>
+					<div id="editor-error1" style="display:none;" class="editor-error"></div>
+					<div id="editor-valid1" style="display:none;" class="editor-valid"></div>
+				</div>
+				<div id="dropZone2" class="column-double span">
+					<div class="container-center"><span class="editor-title">Second CSV to compare</span></div>
+					<br/><input type="button" class="action-button-editor right span" value="Browse CSV file" onClick="document.getElementById('file-input-text-2').click();" />
+					<input type="button" class="action-button-editor right span" value="load CSV from URL" onClick="displayLoadURLDialog(myCodeMirrorText2);" />
+					<br/>
+					<br/><div class="row-container editor-container">
+						<textarea id="editor-container-text-2" class="editor">id,name,year of birth
+1,albert einstein,1879
+2,isaac newton,1643
+3,jean-baptiste charcot,1867
+4,galilée,1564</textarea>
+					</div>
+					<div id="editor-error2" style="display:none;" class="editor-error"></div>
+					<div id="editor-valid2" style="display:none;" class="editor-valid"></div>
+				</div>
+				<br/><br/><div class="container-center">
+					<label class="span">Separator</label> 
+					<select class="span select-action" id="separatorRow"><option value=",">Comma</option><option value="	">Tab</option><option value=";">Semicolon</option><option value="|">Pipe</option></select>
+					<label class="span">Quote</label> 
+					<select class="span select-action" id="quoteRow"><option value='"'>Double quote</option><option value="'">Quote</option></select>
+					<br/><label class="span">Escape (character to escape quote)</label> 
+					<select class="span select-action" id="escapeRow"><option value='"'>Double quote</option><option value="'">Quote</option><option value="\">Backslash</option></select>
+				</div><br/>
+				<div id="result" class="container-center container-action">
+					<h2>CSV comparison</h2>
+					<br/>
+					<input type="button" class="action-button-editor" value="Download"  id="download-diff" />
+					<input type="button" class="action-button-editor" value="Copy to clipboard"  id="copy-diff"/>	
+					<div id="result-csv-diff" class="span result-csv-diff"></div>
+				</div>
+				<br/>
+	</div>
+</div>
+<div class="row-gray">
+	<div class="row-container-small">
+				<div id="userGuide"></div>
+				<h2>User guide</h2>
+				<p>
+					This tool allows to compare two CSV files, and visualize the diff.
+				</p>
+				<p>
+					Copy and paste, drag and drop your CSV files or directly type in the editors above, 
+					and they will be automatically compared!
+					<br/> You can also click on "load CSV from URL" button to load your file from a URL.
+					<br/> You can also click on "Browse CSV file" button to load your CSV from a local file.
+				</p>
+				<p>
+					You can select the separator, the quote and the escape characters to use for CSV files:
+					<ul>
+					<li>Separator: The character that separates columns within each line.</li>
+					<li>Quote: The quoting character to use when a data value is quoted. </li>
+					<li>Escape: The character to use to escape a "quote" character.</li>
+					</ul>
+				</p>
+				<p>
+					You can also directly compare two CSV files by specifying their urls in the GET parameters url1 and url2.
+					<br/>Example: <a href="./index.html?url1=https://extendsclass.com/mock/rest/3b3aea6de65f5bd7576a1079bf9b6ec5/sample1.csv&url2=https://extendsclass.com/mock/rest/3b3aea6de65f5bd7576a1079bf9b6ec5/sample2.csv">./index.html?url1=https://extendsclass.com/mock/rest/3b3aea6de65f5bd7576a1079bf9b6ec5/sample1.csv&url2=https://extendsclass.com/mock/rest/3b3aea6de65f5bd7576a1079bf9b6ec5/sample2.csv</a>
+				</p>
+				<p>
+					This tool highlights in red color the data which are different.
+				</p>
+				<br/>
+
+	</div>
+</div>
+
+<div class="dialog" id="dialog-load-from-url">
+  <div class="dialog-overlay" tabindex="-1" data-a11y-dialog-hide></div>
+  <dialog class="dialog-content" role="alertdialog" aria-labelledby="dialogTitle">
+    <button class="dialog-close" data-a11y-dialog-hide aria-label="Close this dialog window">
+      &times;
+    </button>
+    <div class="title" id="dialog-load-from-url-title">Load CSV From URL</div>
+	<div class="dialog-container">
+		<form>
+		  <label for="name">URL</label>
+		  <input type="text" name="url" id="url" value="" class="text" style="width:80%;" />
+		  <input type="submit" tabindex="-1" style="position:absolute; top:-1000px" />
+		</form>
+		<button type="button" class="action-button-editor right span" onclick="loadFromURL();">Load CSV</button>
+	</div>
+  </dialog>
+</div>
+<script src="./lib/a11y-dialog/a11y-dialog.min.js"></script>
+<script src="./lib/codemirror/codemirror.js"></script>
+<script src="./javascript/csv-diff.js"></script>
